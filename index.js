@@ -27,7 +27,10 @@ app.get('/', (req, res) => {
     //.catch(err =>console.log(err));
 
 mongoose.connect(config.mongoURI,
-{useNewUrlParser:true}).then(() =>console.log('DB CONNECTED'))
+{useNewUrlParser:true,
+  useUnifiedTopology: true 
+
+}).then(() =>console.log('DB CONNECTED'))
                   .catch(err =>console.error(err));
                 
 app.get('/', (req, res) => {
@@ -50,4 +53,35 @@ app.post('/api/users/register', (req, res) => {
   })
 })
 });
+app.post('/api/user/login', (req,res)=>{
+  //find email from the database
+  User.findOne({email:req.body.email}, (err,user)=>{
+    if(!user)
+    return  res.json({
+      loginSuccess:false,
+      message:"Auth faild, email not found"
+    });
+    //compare password from database
+    user.comparePassword(req.body.password, (err, isMatch) =>{
+      if(!isMatch)
+    return  res.json({
+      loginSuccess:false,
+      message:"wrong password"
+    });
+
+    })
+     //genrate token
+     user.generateToken((err, user) =>{
+       if(err) return  res.status(400).send(err)
+       res.cookie("x_auth", user.token)
+       .status(200)
+       .json({
+         loginSuccess:true
+       })
+
+     })
+  })
+  
+ 
+})
 app.listen(3000);
