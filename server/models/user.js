@@ -44,8 +44,8 @@ userSchema.pre('save', function(next){
             //this hash is our password
             bcrypt.hash(user.password, salt, function(err, hash) {
                 if(err) return next(err);
-                user.password=hash;
-                next();
+                user.password=hash
+                next() 
                 // Store hash in your password DB.
             });
         });
@@ -64,12 +64,22 @@ userSchema.methods.comparePassword=function(plainpassword, cb){
 userSchema.methods.generateToken=function(cb){
     var user=this;
     //to make the token
-    var token=jwt.sign(user._id.toHexString, secret)
+    var token=jwt.sign(user._id.toHexString(), 'secret')
         user.token=token;
         user.save(function(err, user){
             if(err) return cb(err)
             cb(null, user);
         })
+}
+userSchema.static.findByToken=function(token, cb){
+    var user=this;
+    //we will find user id after decoding token
+    jwt.verify(token, 'secret', function(err, decode){
+        user.findOne({"_id":decode, "token":token}, function(err, user){
+            if(err) return cb(err);
+            cb(null, user)
+        })
+    })
 }
 const User=mongoose.model('User', userSchema)
 module.exports={ User }
