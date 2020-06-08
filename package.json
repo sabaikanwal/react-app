@@ -8,8 +8,8 @@
     "npm":"6.13.4"
   },
   "scripts": {
-    "start": "node server/index.js",
-    "backend": "nodemon server/index.js"
+    "start":"node server/index.js",
+    "backend":"nodemon server/index.js"
   },
   "author": "saba",
   "license": "ISC",
