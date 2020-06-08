@@ -9,7 +9,7 @@ const config=require('./config/key');
 const { User }=require('./models/user');
 const { auth}=require('./midleware/auth');
 app.get('/', (req, res) => {
-   res.json({"hello": " i am happy to deploy"});
+   res.json({"helllllo": " i am happy to deploy"});
   
 });
 //const URI='mongodb+srv://sabai:database1122@cluster0-qw7s6.mongodb.net/test?retryWrites=true&w=majority';
